@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ElderCare App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2C7BE5", // Calm Blue
+                        "elder-bg": "#F5F7FA", // Light Gray background
+                        "bgGray": "#F5F7FA",
+                        "dark-gray": "#1E293B", // High-contrast Dark Gray
+                        "background-light": "#F5F7FA",
+                        "background-dark": "#1a1c1e",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#2d2d35",
+                        "success": "#2ECC71",
+                        "warning": "#F59E0B",
+                        "danger": "#E74C3C",
+                        "status-green": "#2ECC71",
+                        "card-light": "#ffffff",
+                        "card-dark": "#262626",
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Inter", "sans-serif"],
+                        lexend: ["Lexend", "sans-serif"],
+                    },
+                    borderRadius: {
+                        'ios': '14px',
+                        'ios-lg': '20px',
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                    }
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ios-shadow {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .pulse-effect {
+            box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4);
+            animation: pulse 3s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); }
+            70% { box-shadow: 0 0 0 30px rgba(46, 204, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+        
+        /* SOS Page Styles */
+        .waveform-bar {
+            width: 3px;
+            background-color: #E74C3C;
+            border-radius: 99px;
+            height: 20px;
+        }
+        .gradient-overlay {
+            background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.9) 100%);
+        }
+
+        /* Utility to hide pages */
+        .page-hidden {
+            display: none !important;
+        }
+
+        /* Emergency Setup specific */
+        .touch-target { min-height: 64px; }
+        .input-focus-ring:focus-within { border-color: #2C7BE5; ring: 3px; ring-color: rgba(44, 123, 229, 0.2); }
+
+        /* New Page Custom Styles */
+        .warning-pulse {
+            box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            animation: pulse-warning 2s infinite;
+        }
+        @keyframes pulse-warning {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            70% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+        .pulse-red {
+            box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+        .monitor-active {
+            animation: blink 1.5s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="bg-elder-bg text-slate-900 min-h-screen">
+
+    <!-- PAGE 1: WELCOME SCREEN -->
+    <!-- PAGE 1: WELCOME SCREEN -->
+    <div id="view-welcome" class="w-full max-w-md mx-auto min-h-screen bg-white flex flex-col items-center">
+        <div class="flex-1 flex flex-col px-8 pb-12 w-full">
+            <div class="mt-8 mb-10 flex-shrink-0 w-full">
+                <div
+                    class="relative w-full aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
+                    <img alt="Elderly woman smiling while reading a book" class="w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuARv6DClLCn9fiu-2FLv9uIgQZV4Z_TJ4segEjIO6IjqhbAyjbVkvcU2f-VbldbBsMCz36lO7w1ickMOdyxpoj8ar89bqPNwZBrQRUVHMZosRe-keUmpp7utEak0HgDagdTSLQftVxdYH8Sd6akhYeLcZAyN5-r1h3EN6bDaxzOnR8ObahQc3wEADykGABh-S8G6pYzSwrSkKvIvXcbaNq-IFbbeAcqGy8OccB9KfeoWQR1O8YAeh2_IkD6phQatuG7piq85HbwoxHH" />
+                    <div
+                        class="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 border border-slate-100 shadow-sm">
+                        <span class="flex h-2 w-2 rounded-full bg-green-500"></span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-dark-gray">Passive Safety
+                            Active</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 flex flex-col text-center">
+                <h1 class="text-3xl font-bold text-black leading-tight mb-4">
+                    Helping elders stay safe and connected
+                </h1>
+                <p class="text-dark-gray text-lg leading-relaxed max-w-[280px] mx-auto opacity-80">
+                    Peace of mind for seniors living alone and their families.
+                </p>
+            </div>
+            <div class="space-y-4 mt-auto w-full">
+                <button onclick="navigateTo('view-profile')"
+                    class="w-full bg-primary hover:bg-[#2469C4] text-white font-bold py-5 rounded-2xl shadow-lg shadow-blue-500/20 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    Create Profile
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </button>
+                <button
+                    class="w-full py-5 text-dark-gray font-bold hover:bg-slate-50 rounded-2xl transition-all active:scale-95">
+                    Login
+                </button>
+            </div>
+            <div class="mt-8 text-center">
+                <p class="text-[11px] text-dark-gray uppercase tracking-[0.1em] font-bold opacity-60">
+                    Trusted by 50,000+ Families
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2: CREATE PROFILE -->
+    <div id="view-profile" class="page-hidden max-w-md mx-auto flex flex-col min-h-screen bg-bgGray">
+        <header class="sticky top-0 z-20 bg-bgGray/90 backdrop-blur-md px-6 pt-12 pb-4">
+            <div class="flex items-center justify-between mb-4">
+                <button onclick="navigateTo('view-welcome')"
+                    class="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm border border-slate-200">
+                    <span class="material-symbols-outlined text-slate-900 font-bold">arrow_back_ios_new</span>
+                </button>
+                <div class="px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm">
+                    <span class="text-xs font-bold text-primary uppercase tracking-widest">Step 1 of 4</span>
+                </div>
+                <div class="w-10"></div>
+            </div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Create Your Profile</h1>
+            <p class="text-slate-700 mt-2 text-lg leading-relaxed">
+                Please tell us about yourself so we can help you better in case of an emergency.
+            </p>
+        </header>
+        <main class="px-6 space-y-8 mt-4 pb-12">
+            <div class="flex flex-col items-center">
+                <div class="relative">
+                    <div
+                        class="w-32 h-32 rounded-full bg-white flex items-center justify-center border-4 border-white shadow-md overflow-hidden">
+                        <span class="material-symbols-outlined text-6xl text-slate-300">person</span>
+                    </div>
+                    <button
+                        class="absolute bottom-0 right-0 bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                        <span class="material-symbols-outlined text-xl">photo_camera</span>
+                    </button>
+                </div>
+            </div>
+            <section class="space-y-5">
+                <div class="bg-white p-5 rounded-ios-lg shadow-sm border border-slate-100">
+                    <label class="block text-sm font-bold text-slate-900 uppercase tracking-wide mb-2">Full Name</label>
+                    <input
+                        class="w-full p-4 rounded-ios border-slate-200 bg-slate-50 focus:ring-2 focus:ring-primary focus:border-primary text-lg font-medium text-slate-900 placeholder:text-slate-400"
+                        placeholder="e.g. Martha Robinson" type="text" />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-ios-lg shadow-sm border border-slate-100">
+                        <label class="block text-sm font-bold text-slate-900 uppercase tracking-wide mb-2">Age</label>
+                        <input
+                            class="w-full p-4 rounded-ios border-slate-200 bg-slate-50 focus:ring-2 focus:ring-primary focus:border-primary text-lg font-medium text-slate-900"
+                            placeholder="72" type="number" />
+                    </div>
+                    <div class="bg-white p-5 rounded-ios-lg shadow-sm border border-slate-100">
+                        <label class="block text-sm font-bold text-slate-900 uppercase tracking-wide mb-2">Blood
+                            Group</label>
+                        <select
+                            class="w-full p-4 rounded-ios border-slate-200 bg-slate-50 focus:ring-2 focus:ring-primary focus:border-primary text-lg font-medium text-slate-900 appearance-none">
+                            <option>O+</option>
+                            <option>A+</option>
+                            <option>B+</option>
+                            <option>AB+</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <div class="pt-6 mt-auto">
+                <button onclick="navigateTo('view-safety-permissions')"
+                    class="w-full bg-primary text-white py-5 px-8 rounded-ios-lg text-xl font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                    Save & Continue
+                    <span class="material-symbols-outlined font-bold">arrow_forward</span>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- PAGE 3: SAFETY PERMISSIONS (NEW) -->
+    <div id="view-safety-permissions"
+        class="page-hidden bg-background-light dark:bg-background-dark font-display text-[#0e151b] dark:text-gray-100 antialiased min-h-screen flex flex-col">
+        <div class="flex items-center justify-between p-6 pb-2">
+            <button onclick="navigateTo('view-profile')"
+                class="flex items-center justify-center size-10 rounded-full bg-white dark:bg-zinc-800 shadow-sm border border-gray-100 dark:border-zinc-700">
+                <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">arrow_back_ios_new</span>
+            </button>
+            <span class="text-sm font-semibold tracking-wider text-gray-400 uppercase">Step 2 of 4</span>
+            <div class="size-10"></div>
+        </div>
+        <main class="max-w-md mx-auto px-6 pt-4 pb-24 flex-1">
+            <header class="text-center mb-8">
+                <h1 class="text-[#0e151b] dark:text-white text-3xl font-bold leading-tight mb-4">Your Safety Matters
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+                    To protect you in an emergency, we need your permission for the following:
+                </p>
+            </header>
+            <div class="space-y-4">
+                <div
+                    class="bg-white dark:bg-zinc-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 flex items-start gap-4">
+                    <div
+                        class="flex items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0 size-14">
+                        <span class="material-symbols-outlined text-3xl">videocam</span>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <p class="text-[#0e151b] dark:text-white text-lg font-bold leading-normal">Camera Access</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-snug">Used for
+                            emergency video calls if you need help.</p>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-zinc-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 flex items-start gap-4">
+                    <div
+                        class="flex items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0 size-14">
+                        <span class="material-symbols-outlined text-3xl">mic</span>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <p class="text-[#0e151b] dark:text-white text-lg font-bold leading-normal">Microphone Access</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-snug">Allows you to
+                            speak to responders using voice commands.</p>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-zinc-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 flex items-start gap-4">
+                    <div
+                        class="flex items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0 size-14">
+                        <span class="material-symbols-outlined text-3xl">contact_phone</span>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <p class="text-[#0e151b] dark:text-white text-lg font-bold leading-normal">Emergency Contacts
+                        </p>
+                        <p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-snug">Quickly alerts
+                            family members if an incident occurs.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 px-4 py-4 bg-primary/5 rounded-lg border border-primary/10 text-center">
+                <p class="text-primary text-sm font-medium leading-relaxed">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">verified_user</span>
+                    We only use these in emergencies to keep you safe. Your data is private.
+                </p>
+            </div>
+        </main>
+        <div
+            class="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background-light dark:from-background-dark via-background-light dark:via-background-dark to-transparent">
+            <div class="max-w-md mx-auto flex flex-col gap-3">
+                <button onclick="navigateTo('view-emergency-setup')"
+                    class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-5 rounded-xl text-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+                    Allow & Continue
+                </button>
+                <button class="w-full py-2 text-gray-500 dark:text-gray-400 font-medium text-base text-center">
+                    Learn more about privacy
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 4: EMERGENCY SETUP (NEW) -->
+    <div id="view-emergency-setup"
+        class="page-hidden bg-background-light dark:bg-background-dark text-[#1a1c1e] dark:text-gray-100 min-h-screen flex flex-col font-lexend">
+        <header
+            class="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md px-4 pt-6 pb-2">
+            <div class="flex items-center justify-between">
+                <div class="w-12 h-12 flex items-center justify-start">
+                    <button onclick="navigateTo('view-safety-permissions')">
+                        <span
+                            class="material-symbols-outlined text-3xl cursor-pointer text-gray-700 dark:text-gray-300">arrow_back_ios_new</span>
+                    </button>
+                </div>
+                <h2 class="text-xl font-bold tracking-tight">Emergency Setup</h2>
+                <div class="w-12"></div>
+            </div>
+            <div class="mt-6 px-2">
+                <div class="flex justify-between items-end mb-2">
+                    <p class="text-lg font-bold text-primary">Step 3 of 4</p>
+                    <p class="text-sm font-semibold opacity-60">Finishing up</p>
+                </div>
+                <div class="h-3 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full transition-all duration-500" style="width: 100%;"></div>
+                </div>
+            </div>
+        </header>
+        <main class="flex-1 px-4 pb-48">
+            <div class="py-8 text-center max-w-sm mx-auto">
+                <h1 class="text-3xl font-bold leading-tight mb-4">Who should we contact?</h1>
+                <p class="text-lg opacity-70 leading-relaxed">Add the people we should reach out to if you need help.
+                </p>
+            </div>
+            <div class="mb-8">
+                <button
+                    class="w-full touch-target bg-white dark:bg-gray-800 border-2 border-primary rounded-xl flex items-center justify-center gap-3 text-primary font-bold text-xl shadow-sm active:bg-primary/5 transition-colors group">
+                    <span class="material-symbols-outlined text-3xl">contact_page</span>
+                    Import from Contacts
+                </button>
+                <div class="flex items-center my-8">
+                    <div class="flex-1 h-[2px] bg-gray-200 dark:bg-gray-700"></div>
+                    <span class="px-4 text-xs font-black text-gray-400 uppercase tracking-widest">or add manually</span>
+                    <div class="flex-1 h-[2px] bg-gray-200 dark:bg-gray-700"></div>
+                </div>
+            </div>
+            <div class="space-y-8">
+                <div
+                    class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-800">
+                    <div class="flex items-center gap-3 mb-8">
+                        <span
+                            class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-sm shadow-primary/20">1</span>
+                        <h3 class="text-2xl font-bold">Primary Contact</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-base font-bold text-gray-700 dark:text-gray-300 ml-1">Full Name</label>
+                            <input
+                                class="w-full touch-target px-5 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all placeholder:text-gray-400"
+                                placeholder="e.g. Sarah Jenkins" type="text" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-base font-bold text-gray-700 dark:text-gray-300 ml-1">Mobile Phone
+                                Number</label>
+                            <input
+                                class="w-full touch-target px-5 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all placeholder:text-gray-400"
+                                placeholder="(555) 000-0000" type="tel" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label
+                                class="text-base font-bold text-gray-700 dark:text-gray-300 ml-1">Relationship</label>
+                            <div class="relative">
+                                <select
+                                    class="w-full touch-target px-5 pr-12 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all appearance-none">
+                                    <option disabled="" selected="" value="">Select relationship</option>
+                                    <option>Daughter</option>
+                                    <option>Son</option>
+                                    <option>Spouse</option>
+                                    <option>Grandchild</option>
+                                    <option>Neighbor</option>
+                                    <option>Doctor</option>
+                                    <option>Other</option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-3xl text-gray-400">expand_more</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-gray-100/50 dark:bg-gray-900/50 p-6 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700">
+                    <div class="flex items-center gap-3 mb-6 opacity-50">
+                        <span
+                            class="bg-gray-400 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">2</span>
+                        <h3 class="text-2xl font-bold">Second Contact</h3>
+                    </div>
+                    <p class="text-center py-4 text-gray-500 font-medium">Add a second person for extra safety.</p>
+                    <button
+                        class="w-full py-4 rounded-xl border-2 border-primary/30 border-dashed flex items-center justify-center gap-2 text-primary font-bold text-lg hover:bg-primary/5 active:scale-[0.98] transition-all">
+                        <span class="material-symbols-outlined">person_add</span>
+                        Add Contact
+                    </button>
+                </div>
+            </div>
+        </main>
+        <footer
+            class="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background-light dark:from-background-dark via-background-light dark:via-background-dark to-transparent">
+            <div class="max-w-md mx-auto">
+                <button onclick="navigateTo('view-dashboard')"
+                    class="w-full touch-target bg-primary text-white text-2xl font-bold rounded-2xl shadow-xl shadow-primary/30 active:scale-95 transition-all">
+                    Finish Setup
+                </button>
+                <p class="text-center mt-6 text-sm font-semibold opacity-50">
+                    You can always change contacts in settings.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- PAGE 5: MAIN DASHBOARD -->
+    <div id="view-dashboard"
+        class="page-hidden max-w-md mx-auto bg-background-light dark:bg-background-dark font-display text-[#111418] dark:text-white min-h-screen flex flex-col">
+        <header
+            class="flex items-center bg-white dark:bg-background-dark p-6 pt-8 pb-4 justify-between border-b border-gray-100 dark:border-gray-800">
+            <div class="flex items-center gap-4">
+                <div class="size-14 shrink-0 rounded-full border-2 border-primary/20 p-0.5">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-full"
+                        data-alt="Close up portrait of a smiling elderly woman"
+                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAwx1AFconWfZlxIYmxVkqy-2TGVd83UImI1Ev6gu9OI8bkwcN7ZK7eRqR6hY1vD4bOfhj7ihvFFY4sj-n5SEdrO4K5qHu0iGBiyAqOZIOn4WTN0uegPcXvUzXOjJp3VKcKopoJHlYRWMG3iFn18q-Z1ZUyeXxUcTHEuf3SgMpeMA1UnExAxwR37emjkFGkLlADQ4bABQFxs7DUWtleCVsyTks8C0L1SY-XkwaztCu1yON6dB9a3CTb5I2-pAnpNhLSiba-S2wSy_ja");'>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Welcome back,</p>
+                    <h2 class="text-[#111418] dark:text-white text-2xl font-bold leading-tight tracking-tight">Martha
+                    </h2>
+                </div>
+            </div>
+            <button
+                class="flex size-12 cursor-pointer items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-[#111418] dark:text-white transition-colors">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+        </header>
+        <main class="flex-1 overflow-y-auto px-6 py-8 flex flex-col items-center">
+            <div class="flex flex-col items-center justify-center py-10 w-full">
+                <div class="relative flex items-center justify-center">
+                    <div class="absolute w-72 h-72 rounded-full border border-success/20"></div>
+                    <div class="absolute w-60 h-60 rounded-full border border-success/40"></div>
+                    <button onclick="sendOkSms()"
+                        class="pulse-effect z-10 w-48 h-48 rounded-full bg-success flex flex-col items-center justify-center text-white shadow-xl hover:scale-105 transition-transform active:scale-95 touch-none">
+                        <span class="text-3xl font-black tracking-wider">I'M OK</span>
+                        <span class="text-xs font-semibold mt-1 opacity-80 uppercase tracking-widest">Tap to
+                            Confirm</span>
+                    </button>
+                </div>
+                <p class="mt-12 text-gray-500 dark:text-gray-400 text-sm font-medium">Last check-in: 8:00 AM today</p>
+            </div>
+            <div class="w-full max-w-md mt-6">
+                <div
+                    class="flex flex-col items-stretch justify-start rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] bg-white dark:bg-gray-800 p-6 border border-gray-50 dark:border-gray-700">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-primary/10 rounded-xl">
+                            <span class="material-symbols-outlined text-primary"
+                                style="font-variation-settings: 'FILL' 1;">schedule</span>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Next scheduled check-in</p>
+                            <p class="text-[#111418] dark:text-white text-xl font-bold">7:00 PM tonight</p>
+                        </div>
+                    </div>
+                    <div class="h-px bg-gray-100 dark:bg-gray-700 w-full mb-4"></div>
+                    <div class="flex items-center justify-between">
+                        <p class="text-gray-600 dark:text-gray-300 font-semibold text-lg">Remaining Time</p>
+                        <div
+                            class="bg-gray-50 dark:bg-gray-900 px-4 py-2 rounded-lg border border-gray-100 dark:border-gray-700">
+                            <p class="text-primary font-mono text-xl font-bold tracking-widest">04:12:00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full max-w-md mt-auto pt-8 pb-4">
+                <button onclick="navigateTo('view-sos')"
+                    class="w-full bg-emergency hover:brightness-110 text-white rounded-xl py-5 px-6 flex items-center justify-center gap-3 shadow-lg shadow-emergency/30 transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-2xl"
+                        style="font-variation-settings: 'FILL' 1;">emergency</span>
+                    <span class="text-xl font-bold tracking-tight uppercase">SOS - Call for Help</span>
+                </button>
+                <p class="text-center text-xs text-gray-400 dark:text-gray-500 mt-4 px-6">
+                    Pressing this will immediately notify your primary contacts and emergency services.
+                </p>
+            </div>
+        </main>
+        <nav
+            class="sticky bottom-0 bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800 px-6 pb-8 pt-3">
+            <div class="flex items-center justify-between max-w-md mx-auto">
+                <a class="flex flex-col items-center gap-1.5 text-primary" href="#"
+                    onclick="navigateTo('view-dashboard')">
+                    <span class="material-symbols-outlined text-3xl"
+                        style="font-variation-settings: 'FILL' 1;">home</span>
+                    <p class="text-xs font-bold uppercase tracking-wide">Home</p>
+                </a>
+                <a class="flex flex-col items-center gap-1.5 text-gray-400 dark:text-gray-500" href="#"
+                    onclick="navigateTo('view-activity-history')">
+                    <span class="material-symbols-outlined text-3xl">favorite</span>
+                    <p class="text-xs font-bold uppercase tracking-wide">Health</p>
+                </a>
+                <a class="flex flex-col items-center gap-1.5 text-gray-400 dark:text-gray-500" href="#">
+                    <span class="material-symbols-outlined text-3xl">group</span>
+                    <p class="text-xs font-bold uppercase tracking-wide">Contacts</p>
+                </a>
+                <a class="flex flex-col items-center gap-1.5 text-gray-400 dark:text-gray-500" href="#">
+                    <span class="material-symbols-outlined text-3xl">settings</span>
+                    <p class="text-xs font-bold uppercase tracking-wide">Settings</p>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- PAGE 6: SOS ACTIVITY (OLD) - Renaming or Keeping? Keep as is, appending new ones -->
+    <div id="view-sos"
+        class="page-hidden max-w-md mx-auto bg-background-dark font-display text-gray-100 min-h-screen overflow-hidden">
+        <div class="relative w-full mx-auto min-h-screen flex flex-col items-center">
+            <div class="relative h-1/2 w-full bg-black overflow-hidden flex-1">
+                <img alt="Live camera preview of senior's home environment"
+                    class="w-full h-full object-cover opacity-70"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDclEJRWVTi0PmP6j4l-dY8ST7llU5reCMzX48iiYYGVwQH3uKzFDxksUFR0kryYdHvkddtMBRoTMoB17g3Nym-Ko_pEjw02Q2z3LIgqVPfDdrt5dEdBlYh3YZPGZyXPbe9Yq41WaR1iO1DIpEWAd8WmnhyEylUfHD9fXqcNqoEDyaYL80uVjv0zftUwUVdYmUepbOY0BmtdB-Q1ywBM0Y81W7wf3pAjxc6OdkXERmxgcJ13mmzCLq8StpSeknZ_XznYzs-LJSpQd" />
+                <div class="absolute inset-0 gradient-overlay"></div>
+                <div
+                    class="absolute top-14 left-6 flex items-center space-x-2 bg-black/40 backdrop-blur-sm px-3 py-1 rounded-full border border-white/10">
+                    <div class="w-2.5 h-2.5 rounded-full bg-emergency animate-pulse"></div>
+                    <span class="text-xs font-bold tracking-wider uppercase text-white/90">Live SOS Feed</span>
+                </div>
+            </div>
+
+            <div
+                class="w-full bg-[#1A1C1E] rounded-t-[3rem] px-8 pt-10 pb-12 flex flex-col items-center -mt-8 relative z-10">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-black mb-2 tracking-tight">Help is on the way</h2>
+                    <p class="text-zinc-400 text-sm leading-relaxed px-6">
+                        Your location and live video are being shared with your emergency contacts and local
+                        responders.
+                    </p>
+                </div>
+                <!-- Waveform Animation -->
+                <div class="flex flex-col items-center justify-center my-8">
+                    <div class="flex items-center justify-center gap-1.5 h-10 mb-3">
+                        <div class="waveform-bar" style="height: 12px"></div>
+                        <div class="waveform-bar" style="height: 24px"></div>
+                        <div class="waveform-bar" style="height: 18px"></div>
+                        <div class="waveform-bar" style="height: 32px"></div>
+                        <div class="waveform-bar" style="height: 28px"></div>
+                        <div class="waveform-bar" style="height: 14px"></div>
+                        <div class="waveform-bar" style="height: 36px"></div>
+                        <div class="waveform-bar" style="height: 22px"></div>
+                        <div class="waveform-bar" style="height: 16px"></div>
+                        <div class="waveform-bar" style="height: 26px"></div>
+                    </div>
+                    <p class="text-[10px] uppercase tracking-[0.2em] text-primary font-bold">Audio Monitoring Active
+                    </p>
+                </div>
+
+                <div class="space-y-4 w-full max-w-sm">
+                    <button onclick="initiateEmergencyCall()"
+                        class="w-full bg-primary hover:bg-[#D35400] text-white font-black py-6 rounded-full flex items-center justify-center space-x-3 transition-colors shadow-lg shadow-primary/20">
+                        <span class="material-symbols-outlined">call</span>
+                        <span class="text-lg uppercase tracking-tight">Call Emergency Contact</span>
+                    </button>
+                    <button onclick="navigateTo('view-dashboard')"
+                        class="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-400 font-bold py-5 rounded-full flex items-center justify-center space-x-3 transition-colors border border-zinc-800">
+                        <span class="material-symbols-outlined">close</span>
+                        <span class="uppercase tracking-wide text-sm">End Emergency</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 7: ACTIVITY HISTORY -->
+    <div id="view-activity-history"
+        class="page-hidden relative flex h-screen max-w-md mx-auto w-full flex-col overflow-hidden bg-background-light dark:bg-background-dark text-[#0e151b] dark:text-gray-100 font-display transition-colors duration-300">
+        <!-- TopAppBar -->
+        <header
+            class="sticky top-0 z-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
+            <div class="flex items-center justify-between mb-4">
+                <button
+                    class="flex items-center justify-center size-10 rounded-full bg-white dark:bg-card-dark shadow-sm"
+                    onclick="navigateTo('view-dashboard')">
+                    <span class="material-symbols-outlined text-[#0e151b] dark:text-white">arrow_back_ios_new</span>
+                </button>
+                <h2 class="text-xl font-bold leading-tight tracking-tight flex-1 text-center pr-10">Activity History
+                </h2>
+            </div>
+            <!-- Tabs / Filter Chips -->
+            <div class="flex gap-3 pb-2 overflow-x-auto no-scrollbar">
+                <button
+                    class="bg-primary text-white px-6 py-2.5 rounded-full font-semibold text-sm shadow-md transition-transform active:scale-95">All</button>
+                <button
+                    class="bg-white dark:bg-card-dark text-[#4f7796] dark:text-gray-400 px-6 py-2.5 rounded-full font-semibold text-sm shadow-sm border border-gray-100 dark:border-gray-800 transition-transform active:scale-95">Check-ins</button>
+                <button
+                    class="bg-white dark:bg-card-dark text-[#4f7796] dark:text-gray-400 px-6 py-2.5 rounded-full font-semibold text-sm shadow-sm border border-gray-100 dark:border-gray-800 transition-transform active:scale-95">Alerts</button>
+            </div>
+        </header>
+        <!-- Main Timeline Content -->
+        <main class="flex-1 overflow-y-auto px-4 pb-24">
+            <!-- Section: Today -->
+            <div class="mt-6 mb-4">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4 px-1">
+                    Today
+                </h3>
+                <div class="space-y-4 relative">
+                    <!-- Connector Line -->
+                    <div class="absolute left-[27px] top-6 bottom-6 w-[2px] bg-gray-200 dark:bg-gray-800 -z-10">
+                    </div>
+                    <!-- Event Card: Checked In -->
+                    <div class="flex gap-4 items-start">
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="size-14 rounded-full bg-success/10 flex items-center justify-center text-success border-4 border-background-light dark:border-background-dark">
+                                <span class="material-symbols-outlined text-3xl">check_circle</span>
+                            </div>
+                        </div>
+                        <div
+                            class="flex-1 bg-white dark:bg-card-dark p-5 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-50 dark:border-gray-800">
+                            <div class="flex justify-between items-start">
+                                <p class="text-lg font-bold text-[#0e151b] dark:text-white">Checked In</p>
+                                <span class="text-xs font-medium text-gray-400">9:00 AM</span>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Daily safety confirmation
+                                received.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Event Card: Missed Alert -->
+                    <div class="flex gap-4 items-start">
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="size-14 rounded-full bg-emergency/10 flex items-center justify-center text-emergency border-4 border-background-light dark:border-background-dark">
+                                <span class="material-symbols-outlined text-3xl">notification_important</span>
+                            </div>
+                        </div>
+                        <div
+                            class="flex-1 bg-white dark:bg-card-dark p-5 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border-2 border-emergency/20">
+                            <div class="flex justify-between items-start">
+                                <p class="text-lg font-bold text-emergency">Missed Alert</p>
+                                <span class="text-xs font-bold text-emergency">2:30 PM</span>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Standard check-in window passed
+                                without response.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Section: Yesterday -->
+            <div class="mt-8 mb-4">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4 px-1">
+                    Yesterday</h3>
+                <div class="space-y-4 relative">
+                    <!-- Connector Line -->
+                    <div class="absolute left-[27px] top-6 bottom-6 w-[2px] bg-gray-200 dark:bg-gray-800 -z-10">
+                    </div>
+                    <!-- Event Card: Emergency Call -->
+                    <div class="flex gap-4 items-start">
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="size-14 rounded-full bg-emergency flex items-center justify-center text-white border-4 border-background-light dark:border-background-dark shadow-lg shadow-emergency/20">
+                                <span class="material-symbols-outlined text-3xl">e911_emergency</span>
+                            </div>
+                        </div>
+                        <div
+                            class="flex-1 bg-emergency/5 dark:bg-emergency/10 p-5 rounded-xl border-2 border-emergency/40">
+                            <div class="flex justify-between items-start">
+                                <p class="text-lg font-bold text-emergency">Emergency Call</p>
+                                <span class="text-xs font-bold text-emergency">11:15 PM</span>
+                            </div>
+                            <p class="text-sm text-emergency/80 mt-1 font-medium">SOS button triggered. Emergency
+                                services notified.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Empty State Helper -->
+            <div class="py-12 flex flex-col items-center text-center">
+                <div class="size-20 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-4">
+                    <span class="material-symbols-outlined text-4xl">calendar_today</span>
+                </div>
+                <p class="text-gray-400 dark:text-gray-500 text-sm font-medium">End of available history.</p>
+            </div>
+        </main>
+        <!-- BottomNavBar -->
+        <nav
+            class="fixed bottom-0 inset-x-0 bg-white/90 dark:bg-card-dark/90 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800 px-6 pb-8 pt-3 max-w-md mx-auto z-30">
+            <div class="flex justify-between items-center">
+                <a class="flex flex-col items-center gap-1 group" href="#"
+                    onclick="navigateTo('view-checkin-reminder')">
+                    <div class="text-gray-400 dark:text-gray-500 group-active:scale-90 transition-transform">
+                        <span class="material-symbols-outlined text-[28px]">grid_view</span>
+                    </div>
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                        Dashboard
+                    </p>
+                </a>
+                <a class="flex flex-col items-center gap-1 group" href="#">
+                    <div class="text-primary group-active:scale-90 transition-transform relative">
+                        <span class="material-symbols-outlined text-[28px] fill-current">history</span>
+                        <div
+                            class="absolute -top-1 -right-1 size-2 bg-primary rounded-full border-2 border-white dark:border-card-dark">
+                        </div>
+                    </div>
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-primary">History</p>
+                </a>
+                <a class="flex flex-col items-center gap-1 group" href="#">
+                    <div class="text-gray-400 dark:text-gray-500 group-active:scale-90 transition-transform">
+                        <span class="material-symbols-outlined text-[28px]">settings</span>
+                    </div>
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                        Settings
+                    </p>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- PAGE 8: CHECK-IN REMINDER -->
+    <div id="view-checkin-reminder"
+        class="page-hidden relative flex h-screen max-w-md mx-auto w-full flex-col overflow-hidden bg-background-light dark:bg-background-dark font-display antialiased transition-colors duration-300">
+        <!-- Header: Minimal status-like bar -->
+        <div class="flex items-center justify-between px-6 pt-6 mb-2">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">shield_person</span>
+                <span class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Guardian Connect</span>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary text-sm">notifications_active</span>
+            </div>
+        </div>
+        <!-- Hero Content Area -->
+        <div class="flex-1 flex flex-col items-center justify-center px-6 text-center">
+            <!-- Friendly Avatar/Icon -->
+            <div class="mb-4 p-4 bg-white dark:bg-neutral-800 rounded-full shadow-xl shadow-primary/5">
+                <div class="w-24 h-24 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
+                    <img alt="Smiling friendly senior lady" class="w-full h-full object-cover"
+                        data-alt="Portrait of a smiling senior woman"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDESCso98ZuTYdzOliGxV4O8ndDZK4j8NMl61v9wjnI-SBY8T4STDmYhss3mCNI6_I04n7akUhLrM9MmlNf9Ft9m1fEXZWL54pGItVpNiQwdf2jlRj3x6n4n0Tt58BNs6DONbu0C6eNWJlrdzSZWqHxzUAdE25hiA9g1Usu33S1SUVLb0-P2DnJzhsYkHMeR7zHCTkkJCKd6lxLxtm9f9vOlDesYiF9t6adcP8OfszuwWSb_P87xM_Oy9RpbjIBkt1yqIildIUVBm5sTA7ip-5G1j3GDot1GLnygtm91jvSnrXLjD" />
+                </div>
+            </div>
+            <!-- Headline -->
+            <div class="space-y-2 mb-6">
+                <h1 class="text-[#0e151b] dark:text-white text-2xl font-bold leading-tight tracking-tight">
+                    Hi Martha, check-in time!
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400 text-base font-medium px-4">
+                    Just let us know you're doing well today.
+                </p>
+            </div>
+            <!-- Massive OK Button -->
+            <div class="w-full space-y-3">
+                <button onclick="navigateTo('view-dashboard')"
+                    class="w-full group relative flex h-20 items-center justify-center overflow-hidden rounded-2xl bg-success text-white transition-all hover:brightness-110 active:scale-95 shadow-lg shadow-success/20">
+                    <span class="flex items-center gap-3 text-2xl font-bold tracking-wider">
+                        <span class="material-symbols-outlined text-3xl">check_circle</span>
+                        I'M OK
+                    </span>
+                </button>
+                <!-- Snooze Button -->
+                <button
+                    class="w-full flex h-16 items-center justify-center rounded-2xl bg-white dark:bg-neutral-800 border bg-gray-50 border-gray-200 dark:border-neutral-700 text-[#0e151b] dark:text-white transition-all active:scale-95 shadow-sm">
+                    <span class="flex items-center gap-2 text-lg font-semibold">
+                        <span class="material-symbols-outlined text-gray-500">snooze</span>
+                        Snooze 10m
+                    </span>
+                </button>
+            </div>
+        </div>
+        <!-- Footer / SOS Area -->
+        <div class="p-6 flex justify-end items-center">
+            <div class="flex items-center gap-3">
+                <p class="text-emergency font-bold text-xs tracking-widest uppercase opacity-80">Immediate Help</p>
+                <button onclick="navigateTo('view-missed-checkin')"
+                    class="w-16 h-16 rounded-full bg-emergency flex items-center justify-center text-white shadow-xl shadow-emergency/40 active:scale-90 transition-transform">
+                    <div class="flex flex-col items-center">
+                        <span class="material-symbols-outlined text-2xl leading-none">emergency_share</span>
+                        <span class="text-[10px] font-black mt-0.5">SOS</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+        <!-- Decorative background element -->
+        <div class="absolute -top-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10"></div>
+        <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-success/5 rounded-full blur-3xl -z-10"></div>
+    </div>
+
+    <!-- PAGE 9: MISSED CHECK-IN -->
+    <div id="view-missed-checkin"
+        class="page-hidden relative flex h-screen max-w-md mx-auto w-full flex-col overflow-hidden bg-background-light dark:bg-background-dark font-display antialiased transition-colors duration-300">
+        <!-- TopAppBar / Warning Banner -->
+        <div class="bg-warning dark:bg-warning/90 px-4 pt-12 pb-6 flex items-center justify-between shadow-md">
+            <div class="text-black flex size-12 shrink-0 items-center justify-center">
+                <span class="material-symbols-outlined text-3xl">warning</span>
+            </div>
+            <h2 class="text-black text-xl font-bold leading-tight tracking-tight flex-1 text-center pr-12">Missed
+                Check-In</h2>
+        </div>
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col items-center justify-center px-6 py-8">
+            <!-- Headline Section -->
+            <div class="text-center mb-0">
+                <h1 class="text-[#0e151b] dark:text-white tracking-tight text-[32px] font-bold leading-tight pb-1">
+                    Are you alright?</h1>
+                <p class="text-[#4a5568] dark:text-gray-400 text-base font-normal leading-relaxed">Emergency alert
+                    starting in:</p>
+            </div>
+            <!-- Timer Component -->
+            <div class="flex gap-4 py-4 w-full max-w-[240px]">
+                <div class="flex grow basis-0 flex-col items-center gap-1">
+                    <div
+                        class="flex h-20 w-full items-center justify-center rounded-2xl bg-white dark:bg-neutral-800 shadow-xl border border-gray-100 dark:border-neutral-700">
+                        <p class="text-danger text-4xl font-bold leading-tight tabular-nums">02</p>
+                    </div>
+                    <p class="text-[#0e151b] dark:text-gray-300 text-xs font-semibold uppercase tracking-wider">
+                        Minutes
+                    </p>
+                </div>
+                <div class="flex items-center pt-2">
+                    <span class="text-3xl font-bold text-gray-300 dark:text-gray-600">:</span>
+                </div>
+                <div class="flex grow basis-0 flex-col items-center gap-1">
+                    <div
+                        class="flex h-20 w-full items-center justify-center rounded-2xl bg-white dark:bg-neutral-800 shadow-xl border border-gray-100 dark:border-neutral-700">
+                        <p class="text-danger text-4xl font-bold leading-tight tabular-nums">00</p>
+                    </div>
+                    <p class="text-[#0e151b] dark:text-gray-300 text-xs font-semibold uppercase tracking-wider">
+                        Seconds
+                    </p>
+                </div>
+            </div>
+            <!-- Detailed Explanation Card -->
+            <div
+                class="bg-white dark:bg-neutral-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 mb-6 w-full">
+                <p class="text-[#0e151b] dark:text-white text-sm font-normal leading-relaxed text-center">
+                    If you don't respond, we will notify your emergency contacts:
+                    <span class="font-bold">Mary (Daughter)</span> and <span class="font-bold">John (Son)</span>.
+                </p>
+            </div>
+            <!-- Primary Action Button (Success Green) -->
+            <div class="w-full flex flex-col gap-3">
+                <button onclick="navigateTo('view-dashboard')"
+                    class="flex w-full items-center justify-center overflow-hidden rounded-2xl h-20 px-5 bg-success hover:bg-success/90 transition-colors shadow-lg active:scale-95 duration-75">
+                    <span class="text-white text-2xl font-bold tracking-widest uppercase">I'M OK</span>
+                </button>
+                <!-- Secondary Emergency Action -->
+                <button onclick="navigateTo('view-emergency-triggered')"
+                    class="flex w-full items-center justify-center h-12 px-5 text-danger font-bold text-base hover:bg-danger/10 rounded-xl transition-colors mt-0">
+                    <span class="material-symbols-outlined mr-2">emergency_share</span>
+                    Call Emergency Now
+                </button>
+            </div>
+        </div>
+        <!-- Footer Visual Hint -->
+        <div class="h-8 bg-background-light dark:bg-background-dark flex justify-center items-center pb-4">
+            <div class="w-32 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+        </div>
+    </div>
+
+    <!-- PAGE 10: EMERGENCY TRIGGERED -->
+    <div id="view-emergency-triggered"
+        class="page-hidden relative flex min-h-screen max-w-md mx-auto w-full flex-col overflow-x-hidden bg-background-dark font-display text-white">
+        <!-- Top App Bar -->
+        <div class="flex items-center p-4 pb-2 justify-between">
+            <div class="text-white flex size-12 shrink-0 items-center justify-center">
+                <span class="material-symbols-outlined text-3xl">emergency_home</span>
+            </div>
+            <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">
+                Emergency Protocol</h2>
+        </div>
+        <!-- Emergency Alert Header -->
+        <div class="flex flex-col items-center px-6 pt-8 pb-4">
+            <div class="size-20 rounded-full bg-emergency-red/20 flex items-center justify-center mb-6 pulse-red">
+                <span class="material-symbols-outlined text-emergency-red text-5xl">priority_high</span>
+            </div>
+            <h1 class="text-white tracking-tight text-[36px] font-bold leading-tight text-center">EMERGENCY
+                TRIGGERED
+            </h1>
+            <p class="text-white/70 text-lg font-medium text-center mt-2">Check-in missed. Protocol activated.</p>
+        </div>
+        <!-- Monitoring Status Card -->
+        <div class="px-4 py-2">
+            <div class="flex items-center gap-4 rounded-xl p-5 bg-white/5 border border-white/10">
+                <div class="relative">
+                    <span class="material-symbols-outlined text-emergency-red text-3xl monitor-active">videocam</span>
+                    <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emergency-red opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-emergency-red"></span>
+                    </span>
+                </div>
+                <div class="flex flex-col">
+                    <p class="text-white text-base font-bold leading-none mb-1">Live Audio/Video Active</p>
+                    <p class="text-white/60 text-sm">Environmental monitoring is streaming to responders.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Main Reassurance Card -->
+        <div class="px-4 py-4">
+            <div class="bg-white rounded-2xl p-6 shadow-2xl">
+                <p class="text-[#0e151b] text-xl font-bold leading-snug text-center">Emergency contacts have been
+                    notified.</p>
+                <p class="text-[#0e151b]/70 text-sm text-center mt-2 font-medium">Help is being coordinated right
+                    now.
+                </p>
+            </div>
+        </div>
+        <!-- Contact Status List -->
+        <div class="px-4 flex flex-col gap-3 pb-32">
+            <h3 class="text-white/50 text-xs font-bold uppercase tracking-widest px-1 mt-4">Responder Status</h3>
+            <!-- Sarah -->
+            <div class="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl p-4">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-xl">person</span>
+                    </div>
+                    <div>
+                        <p class="text-white font-bold text-sm">Sarah (Daughter)</p>
+                        <p class="text-white/50 text-xs">Primary Contact</p>
+                    </div>
+                </div>
+                <div
+                    class="flex items-center gap-2 px-3 py-1 bg-status-green/10 rounded-full border border-status-green/20">
+                    <span class="material-symbols-outlined text-status-green text-sm">check_circle</span>
+                    <span class="text-status-green text-xs font-bold">NOTIFIED</span>
+                </div>
+            </div>
+            <!-- Dr. Miller -->
+            <div class="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl p-4">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-xl">medical_services</span>
+                    </div>
+                    <div>
+                        <p class="text-white font-bold text-sm">Dr. Miller</p>
+                        <p class="text-white/50 text-xs">Physician</p>
+                    </div>
+                </div>
+                <div
+                    class="flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full border border-white/10 animate-pulse">
+                    <span class="material-symbols-outlined text-white text-sm animate-spin">call</span>
+                    <span class="text-white text-xs font-bold uppercase">Calling...</span>
+                </div>
+            </div>
+            <!-- Local Dispatch -->
+            <div class="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl p-4 opacity-60">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-xl">local_police</span>
+                    </div>
+                    <div>
+                        <p class="text-white font-bold text-sm">Local Dispatch</p>
+                        <p class="text-white/50 text-xs">Emergency Services</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
+                    <span class="material-symbols-outlined text-white/40 text-sm">hourglass_empty</span>
+                    <span class="text-white/40 text-xs font-bold uppercase">Queued</span>
+                </div>
+            </div>
+        </div>
+        <!-- Sticky Footer Actions -->
+        <div
+            class="fixed bottom-0 left-0 w-full p-6 bg-gradient-to-t from-background-dark via-background-dark/95 to-transparent">
+            <div class="flex flex-col gap-4 max-w-md mx-auto">
+                <!-- Large Emergency Action -->
+                <button onclick="navigateTo('view-live-home')"
+                    class="w-full bg-emergency-red hover:bg-emergency-red/90 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg shadow-emergency-red/20 transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-2xl">call</span>
+                    <span class="text-xl">CALL EMERGENCY SERVICES</span>
+                </button>
+                <!-- "I'm Safe" Dismissal -->
+                <button onclick="navigateTo('view-dashboard')"
+                    class="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-4 rounded-xl border border-white/10 transition-all active:scale-95">
+                    I AM SAFE (CANCEL ALERT)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 11: LIVE HOME -->
+    <div id="view-live-home"
+        class="page-hidden relative flex h-screen max-w-md mx-auto w-full flex-col overflow-hidden bg-background-light dark:bg-background-dark font-display text-[#0e151b] dark:text-white antialiased">
+        <!-- TopAppBar -->
+        <div
+            class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between border-b border-[#d0dde6] dark:border-white/10 shrink-0">
+            <div class="text-[#0e151b] dark:text-white flex size-12 shrink-0 items-center cursor-pointer"
+                onclick="navigateTo('view-dashboard')">
+                <span class="material-symbols-outlined">arrow_back_ios_new</span>
+            </div>
+            <div class="flex flex-col items-center flex-1">
+                <h2
+                    class="text-[#0e151b] dark:text-white text-lg font-bold leading-tight tracking-tight flex items-center gap-2">
+                    <span class="size-2 rounded-full bg-emergency pulse-red"></span>
+                    Live: Martha’s Home
+                </h2>
+                <div class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-success size-4 !text-[14px]">sensors</span>
+                    <span
+                        class="text-xs font-medium text-[#4f7796] dark:text-primary/70 uppercase tracking-widest">Connected
+                        • 1080p</span>
+                </div>
+            </div>
+            <div class="flex w-12 items-center justify-end">
+                <button
+                    class="flex items-center justify-center rounded-xl h-12 bg-transparent text-[#0e151b] dark:text-white">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+            </div>
+        </div>
+        <!-- Scrollable Content Area -->
+        <div class="flex-1 overflow-y-auto pb-40">
+            <!-- MediaPlayer: Live Video Feed -->
+            <div class="p-4 pt-4">
+                <div class="relative flex flex-col items-center justify-center bg-black aspect-video rounded-xl overflow-hidden group border-2 border-transparent hover:border-primary/50 transition-all shadow-xl"
+                    data-alt="Live video stream of a sunny living room"
+                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCuB32vXlE53znqPjJdfE3CxkfoUOJIDDRHnt0Q7jTmTiyb92r9yyFFq6ndedQzHwNkh3MXUqzy1Rl0IRg-p5-6SfC_6GIuMCz6h3vSntWZKldzSZWqHxzUAdE25hiA9g1Usu33S1SUVLb0-P2DnJzhsYkHMeR7zHCTkkJCKd6lxLxtm9f9vOlDesYiF9t6adcP8OfszuwWSb_P87xM_Oy9RpbjIBkt1yqIildIUVBm5sTA7ip-5G1j3GDot1GLnygtm91jvSnrXLjD"); background-size: cover; background-position: center;'>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
+                    <button
+                        class="relative z-10 flex shrink-0 items-center justify-center rounded-full size-16 bg-white/20 backdrop-blur-md text-white border border-white/30 hover:scale-105 transition-transform">
+                        <span class="material-symbols-outlined !text-[32px] translate-x-0.5"
+                            style="font-variation-settings: 'FILL' 1">play_arrow</span>
+                    </button>
+                    <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <button class="bg-black/40 backdrop-blur-sm p-2 rounded-lg text-white">
+                                <span class="material-symbols-outlined">volume_up</span>
+                            </button>
+                            <span
+                                class="text-white text-xs font-medium bg-black/40 backdrop-blur-sm px-2 py-1 rounded-md">Living
+                                Room Cam</span>
+                        </div>
+                        <button class="bg-black/40 backdrop-blur-sm p-2 rounded-lg text-white">
+                            <span class="material-symbols-outlined">fullscreen</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- ActionPanel: Emergency Alert -->
+            <div class="px-4 py-2 @container">
+                <div
+                    class="flex flex-1 flex-col items-start justify-between gap-4 rounded-xl border-2 border-emergency/30 bg-white dark:bg-background-dark p-5 shadow-lg @[480px]:flex-row @[480px]:items-center">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-emergency/10 text-emergency p-3 rounded-full">
+                            <span class="material-symbols-outlined !text-[28px]">notification_important</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <p class="text-emergency text-lg font-bold leading-tight">Missed Check-in</p>
+                            <p class="text-[#4f7796] dark:text-white/70 text-base font-normal leading-normal">Martha
+                                missed her 9:00 AM scheduled check-in today.</p>
+                        </div>
+                    </div>
+                    <button
+                        class="flex min-w-[120px] w-full @[480px]:w-auto cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-6 bg-emergency text-white text-sm font-bold leading-normal shadow-md active:scale-95 transition-all">
+                        <span class="truncate">Dismiss Alert</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Health Stats Grid -->
+            <div class="flex flex-wrap gap-4 p-4">
+                <!-- Stat Card 1 -->
+                <div
+                    class="flex min-w-[158px] flex-1 flex-col gap-3 rounded-xl p-5 border border-[#d0dde6] dark:border-white/10 bg-white dark:bg-background-dark shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-emergency">favorite</span>
+                        <span class="text-success text-xs font-bold bg-success/10 px-2 py-0.5 rounded-full">+2%</span>
+                    </div>
+                    <p class="text-[#4f7796] dark:text-white/60 text-sm font-medium uppercase tracking-wider">Heart
+                        Rate
+                    </p>
+                    <p class="text-[#0e151b] dark:text-white tracking-tight text-3xl font-bold leading-tight">72
+                        <span class="text-base font-normal text-[#4f7796]">BPM</span>
+                    </p>
+                </div>
+                <!-- Stat Card 2 -->
+                <div
+                    class="flex min-w-[158px] flex-1 flex-col gap-3 rounded-xl p-5 border border-[#d0dde6] dark:border-white/10 bg-white dark:bg-background-dark shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-primary">thermostat</span>
+                        <span
+                            class="text-[#4f7796] text-xs font-bold bg-gray-100 px-2 py-0.5 rounded-full">Stable</span>
+                    </div>
+                    <p class="text-[#4f7796] dark:text-white/60 text-sm font-medium uppercase tracking-wider">Room
+                        Temp
+                    </p>
+                    <p class="text-[#0e151b] dark:text-white tracking-tight text-3xl font-bold leading-tight">
+                        71°<span class="text-base font-normal text-[#4f7796]">F</span></p>
+                </div>
+                <!-- Stat Card 3 -->
+                <div
+                    class="flex min-w-full flex-col gap-3 rounded-xl p-5 border border-[#d0dde6] dark:border-white/10 bg-white dark:bg-background-dark shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">directions_walk</span>
+                            <p class="text-[#4f7796] dark:text-white/60 text-sm font-medium uppercase tracking-wider">
+                                Last Activity</p>
+                        </div>
+                        <span class="text-emergency text-xs font-bold bg-emergency/10 px-2 py-0.5 rounded-full">-5%
+                            lower</span>
+                    </div>
+                    <div class="flex items-baseline justify-between">
+                        <p class="text-[#0e151b] dark:text-white tracking-tight text-3xl font-bold leading-tight">
+                            24m
+                            ago</p>
+                        <p class="text-[#4f7796] dark:text-white/70 text-sm">in Kitchen</p>
+                    </div>
+                </div>
+            </div>
+            <!-- ListItem: Activity Log Preview -->
+            <div class="px-4 py-2">
+                <div
+                    class="bg-white dark:bg-background-dark border border-[#d0dde6] dark:border-white/10 rounded-xl overflow-hidden">
+                    <div
+                        class="flex items-center gap-4 px-4 min-h-[72px] py-4 justify-between border-b border-[#d0dde6] dark:border-white/10">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
+                                <span class="material-symbols-outlined">kitchen</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-[#0e151b] dark:text-white text-base font-bold line-clamp-1">Kitchen
+                                    Motion Sensor</p>
+                                <p class="text-[#4f7796] dark:text-white/70 text-sm font-normal line-clamp-1">No
+                                    motion
+                                    detected since 8:36 AM</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <p class="text-primary text-sm font-bold bg-primary/10 px-3 py-1 rounded-full">Active
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 px-4 min-h-[72px] py-4 justify-between">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
+                                <span class="material-symbols-outlined">door_front</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-[#0e151b] dark:text-white text-base font-bold line-clamp-1">Front
+                                    Door
+                                </p>
+                                <p class="text-[#4f7796] dark:text-white/70 text-sm font-normal line-clamp-1">Locked
+                                    at
+                                    7:15 AM</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <p class="text-[#4f7796] text-sm font-medium">Secured</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Sticky Action Footer -->
+        <div
+            class="absolute bottom-0 left-0 right-0 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl border-t border-[#d0dde6] dark:border-white/10 p-6 pb-10 flex gap-4">
+            <button
+                class="flex-1 flex flex-col items-center justify-center gap-1 cursor-pointer overflow-hidden rounded-xl h-20 bg-primary text-white shadow-lg active:scale-95 transition-all">
+                <span class="material-symbols-outlined !text-[28px]"
+                    style="font-variation-settings: 'FILL' 1">call</span>
+                <span class="text-sm font-bold uppercase tracking-widest">Call Martha</span>
+            </button>
+            <button
+                class="flex-1 flex flex-col items-center justify-center gap-1 cursor-pointer overflow-hidden rounded-xl h-20 bg-emergency text-white shadow-lg active:scale-95 transition-all">
+                <span class="material-symbols-outlined !text-[28px]"
+                    style="font-variation-settings: 'FILL' 1">emergency_share</span>
+                <span class="text-sm font-bold uppercase tracking-widest">SOS Services</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function sendOkSms() {
+            const phoneNumber = "6369557647";
+            const message = "I'am fine with dailt task";
+
+            // Detect iOS for specific delimiter
+            const ua = navigator.userAgent.toLowerCase();
+            const isiOS = /iphone|ipad|ipod/.test(ua);
+            const delimiter = isiOS ? '&' : '?';
+
+            window.location.href = `sms:${phoneNumber}${delimiter}body=${encodeURIComponent(message)}`;
+        }
+
+        function initiateEmergencyCall() {
+            alert("call has initiated");
+            navigateTo('view-dashboard');
+        }
+
+        function navigateTo(pageId) {
+            // Hide all pages
+            document.querySelectorAll('body > div[id^="view-"]').forEach(el => {
+                el.classList.add('page-hidden');
+            });
+
+            // Show requested page
+            const page = document.getElementById(pageId);
+            if (page) {
+                page.classList.remove('page-hidden');
+                // Scroll to top
+                window.scrollTo(0, 0);
+
+                // Toggle global dark mode class for SOS page
+                if (pageId === 'view-sos') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    // Ensure normal light mode background for other pages
+                    document.body.classList.add('bg-elder-bg');
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
